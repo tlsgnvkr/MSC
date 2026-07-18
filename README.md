@@ -1,70 +1,249 @@
-# Getting Started with Create React App
+<h1 align="center">공군 휴가달력</h1>
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+수고 많으십니다!
+공군 교육사령부 군수2학교 학생대 일병 박신후입니다.
 
-## Available Scripts
+이 프로젝트는 일병 마지막 휴가를 나와서 뭘 할까 고민하다가
+가볍게 만든 사이드 프로젝트입니다.
 
-In the project directory, you can run:
+공군 기간장병이라면 누구에게나 도움이 될 다양한 기능들,
+그리고 깔끔하고 정확한 UI 등을 기반으로 하여
+모든 공군 기간장병들이 유용하게 사용할 수 있는 프로그램을 목표로 개발하였습니다.
 
-### `npm start`
+기본적으로 **Local 파일로 열 수 있게끔** 설계되었으며,
+따라서 **인터넷 환경/인트라넷 환경에 무관하게 항상 사용 가능**합니다.
+또한, 개인 유저 데이터는 **JSON 파일의 형태로 보관 가능**하며,
+이 보관된 JSON 파일을 불러옴으로써 **언제든 열 수 있습니다**.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+앞으로 이 앱을 사용하시게 될 모든 공군 기간장병들의 앞날을 진심으로 응원하며,
+지금부터 이 앱의 다양한 기능들 및 그 사용법을 소개합니다.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+---
 
-### `npm test`
+## 📁 프로젝트 파일 구조
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```text
+militaryservicecalendar
+├── public
+│   ├── index.html                  // 앱의 메인 HTML 템플릿
+│   └── ROKAF_Emblem.ico            // 공군 마크(로고) 파비콘
+├── src
+│   ├── Components                  // 화면을 구성하는 UI 컴포넌트 모음
+│   │   ├── CalendarPanel.jsx       // 달력들을 감싸는 스크롤 컨테이너 및 렌더링 영역
+│   │   ├── ControlPanel.jsx        // '오늘로 돌아가기' 버튼 및 입대/전역일 표시 패널
+│   │   ├── DetailPanel.jsx         // 선택한 날짜의 상세 정보(출타/초과근무/코멘트) 패널
+│   │   ├── Footer.jsx              // 앱 하단 저작권 표시 푸터
+│   │   ├── MonthCalendar.jsx       // react-calendar 커스텀(연속 바, 코멘트 말풍선 등 UI 렌더링)
+│   │   ├── OutButtons.jsx          // 종일 출타(휴가, 성과제 외박 등) 선택 버튼 그룹
+│   │   ├── OutUsagePanel.jsx       // 휴가 및 성과제 외박 사용 현황/제한 표시 패널
+│   │   ├── OverWorkButtons.jsx     // 부분 출타 및 초과근무(오전/오후/저녁) 선택 버튼 그룹
+│   │   ├── ProgressPanel.jsx       // 전체 복무율(%)을 나타내는 프로그레스 바 패널
+│   │   └── SideBar.jsx             // 앱 설정(테마, 사용자 정보, 주기, 휴일 관리 및 데이터 초기화) 메뉴
+│   ├── Hooks                       // 비즈니스 로직과 상태 관리를 분리한 Custom Hooks
+│   │   ├── useCalendarState.js     // LocalStorage를 활용한 앱의 전역 설정 상태(State) 관리
+│   │   ├── useCurrentCycle.js      // 설정된 주기에 따른 성과제 외박 날짜 범위 계산 및 강조 판별
+│   │   ├── useDateDB.js            // 날짜별 데이터(출타/초과근무/메모) 저장 및 유효성(충돌 방지) 검사
+│   │   ├── useOutUsage.js          // 현재 주기 내의 성과제 외박 및 각 휴가별 사용 개수 집계
+│   │   └── useServiceRate.js       // 입대/전역일 기반 현재 복무율(%) 및 남은 일수(D-Day) 계산
+│   ├── Utils                       // 앱 전반에서 재사용되는 순수 함수 및 상수 모음
+│   │   ├── calendarUtils.js        // 출타/초과근무 종류에 따른 라벨 및 옵션 설정 값
+│   │   ├── dateUtils.js            // 안전한 날짜 객체 초기화 및 문자열(YYYY-MM-DD) 포맷팅 유틸
+│   │   ├── holidayUtils.js         // 커스텀 휴일 객체에서 특정 날짜의 휴일 이름을 반환하는 유틸
+│   │   ├── optionColors.js         // 일정 종류별 캘린더 테마 색상(HEX Code) 중앙 관리소
+│   │   └── rankUtils.js            // 입대일 기준 현재 계급(이병~병장) 및 호봉 계산 유틸
+│   ├── index.js                    // React 애플리케이션의 렌더링 진입점(Entry Point)
+│   ├── Main.css                    // 캘린더 툴팁, 다크 모드, 반응형 레이아웃 등을 제어하는 전역 스타일시트
+│   └── Main.jsx                    // 모든 컴포넌트와 훅을 조립하여 화면을 구성하는 최상위 부모 컴포넌트
+├── package.json                    // 프로젝트 의존성(라이브러리) 및 실행 스크립트 정보
+├── package-lock.json               // 설치된 패키지들의 정확한 버전 정보 기록
+└── README.md                       // 프로젝트 개요, 주요 기능, 이스터에그 등을 설명하는 마크다운 문서
+```
 
-### `npm run build`
+---
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## 1. 설정 영역
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+가장 먼저, 왼쪽 사이드탭을 이용하여
+앱 사용에 필요한 다양한 설정들을 적용할 수 있습니다.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### (1) 사용자 정보 설정
+사용자의 **이름**, **생년월일**을 설정할 수 있습니다.
 
-### `npm run eject`
+### (2) 테마 설정
+앱의 테마를 **라이트 모드/다크 모드**로 설정할 수 있습니다.
+테마 종류는 (i) **시스템 기본 설정** (ii) **라이트 모드** (iii) **다크 모드** 이상의 세 가지가 있습니다.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### (3) 앱 제목 변경
+말 그대로, 앱 디스플레이 최상단에 있는 **제목을 변경**할 수 있습니다.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### (4) 복무일 설정
+사용자의 **입대일/전역일을 설정**할 수 있습니다.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### (5) 성과제 외박 주기 설정
+공군의 외박은 각 장병당 (i) **6주당 3일** (ii) **8주당 4일** (iii) **12주당 6일** 중 하나로 고정되며, 앱 설정을 통해 자신의 주기가 어디에 해당하는지 설정할 수 있습니다.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### (6) 근무지 특성을 통한 연가 일수 설정
+공군의 연가는 일병/상병/병장 각 계급당
+기본적으로 **10일/8일/10일**이 주어집니다.
+단, 자신의 근무지가 **3급 격오지인 경우 14일/10일/13일**,
+**1~2급 격오지인 경우 17일/13일/16일**이 주어집니다.
+앱 설정을 통해 자신의 근무지가 어디에 해당하는지 설정할 수 있습니다.
 
-## Learn More
+### (7) 계급별 포상휴가 설정
+공군의 포상휴가는 일병/상병/병장 각 계급당
+**총 6개까지** 사용할 수 있습니다.
+단, 이전 계급에서 사용하지 않은 포상휴가는 **최대 2개까지**
+**각 계급으로 이월이 가능**합니다.
+앱 설정을 통해 자신의 상황에 맞게 계급별 포상휴가 사용 개수를
+설정할 수 있습니다.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### (8) 공휴일 설정
+이 앱은 외부 네트워크와의 연동이 없기 때문에,
+**직접 공휴일을 설정**해야 합니다.
+날짜와 그 해당사항을 입력하면 그 날짜가 공휴일로 등록되며,
+달력에서도 **빨간 날짜**로 표시된 것을 볼 수 있습니다.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### (9) 데이터 백업/복원/초기화
+사용자가 지금까지 저장한 데이터를 **백업**하거나,
+백업된 데이터를 불러와서 **복원**하거나,
+데이터를 **초기화**할 수 있습니다.
 
-### Code Splitting
+**한 번 복원된 데이터나 초기화된 데이터는 되돌릴 수 없으므로**
+신중하게 선택하시기 바랍니다.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+---
 
-### Analyzing the Bundle Size
+## 2. 달력 영역
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+중앙에 있는 달력을 통해
+자신의 복무 기간 전체에 대한 정보를 파악할 수 있습니다.
 
-### Making a Progressive Web App
+### (1) 달력 표시 범위
+달력에 표시되는 범위는 입대일을 S, 전역일을 E라고 할 때
+**S가 포함된 달부터 E가 포함된 달까지**이며,
+이 이외의 영역은 표시되지 않습니다.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+### (2) 날짜별 표시 형식
+날짜의 특성에 따라 날짜 칸에 별도의 서식이 부여됩니다.
+먼저 토요일의 경우 **파란색 글씨**,
+일요일 or 공휴일의 경우 **빨간색 글씨**로 날짜가 표시됩니다.
+오늘 날짜의 경우 **노란색 음영**으로,
+임의의 날짜에 마우스를 올려 놓은 경우 **연녹색 음영**으로,
+현재 선택한 날짜의 경우 **초록색 음영**으로 날짜가 표시됩니다.
 
-### Advanced Configuration
+날짜를 선택할 경우 해당 날짜를 포함하는 달력이
+**자동으로 달력의 세로 방향 중앙으로 오도록 스크롤이 조정**됩니다.
+만약 달력의 회색 글자(즉, 해당 달 이전/이후의 날짜)를 선택할 경우
+해당 날짜가 속한 달력을 기준으로 스크롤이 조정됩니다.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+성과제 외박 주기가 돌아오는 기준일의 경우
+**파란색 점선 테두리와 연청색 음영**으로 날짜가 표시됩니다.
 
-### Deployment
+### (3) 오늘로 돌아가기
+말 그대로 **오늘을 선택하는 버튼**입니다.
+오늘 날짜를 선택하는 개념이기 때문에, **선택에 대한 옵션이 모두 적용**됩니다.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+---
 
-### `npm run build` fails to minify
+## 3. 현황 영역
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+복무 간 전체적인 현황을 알 수 있는 영역입니다.
+
+### (1) 입대일/전역일 디스플레이
+사용자가 설정한 **입대일/전역일**을 디스플레이 상에 표시합니다.
+
+### (2) 호봉 디스플레이
+사용자의 **현재 호봉**을 디스플레이 상에 표시합니다.
+단, **조기/지연진급은 반영되지 않습니다.**
+
+### (3) 외출/외박/휴가 사용 현황
+외출/외박/휴가 사용 현황을 한눈에 볼 수 있습니다.
+각 현황에 대한 상세 설명은 다음과 같습니다.
+
+(i) **평일외출**: **현재 날짜가 속한 달**에 몇 개의 평일외출을 사용하였는지 보여줍니다.
+
+(ii) **성과제 외박**: **현재 날짜가 속한 성과제 외박 주기 내**에서 몇 개의 성과제 외박을 사용하였는지 보여줍니다.
+
+(iii) **일병/상병/병장연가**: **복무 기간 내**에 총 몇 개의 일병/상병/병장연가를 사용하였는지 보여줍니다.
+
+(iv) **포상휴가**: **현 계급 내**에 총 몇 개의 포상휴가를 사용하였는지 보여줍니다.
+
+(v) **위로휴가**: **복무 기간 내**에 총 몇 개의 위로휴가를 사용하였는지 보여줍니다.
+위로휴가 개수는 사용자에 따라 다르므로 **직접 설정**할 수 있습니다.
+
+### (4) 복무율 그래프
+복무율 그래프를 통해 **현재 본인의 복무율**을 알 수 있습니다.
+
+---
+
+## 4. 휴가/초과근무 설정일
+
+선택한 날짜에 대한 휴가 및 초과근무를 설정할 수 있습니다.
+
+### (1) 선택한 날짜
+가장 먼저 선택한 날짜가 언제인지 보여줍니다.
+
+날짜 옆에는 **전역 D-Day**가 표시되며,
+이외에 날짜의 추가 속성에 따라 다음이 같이 표시됩니다.
+(i) 선택한 날짜가 오늘인 경우, 전역 D-Day 옆에 **오늘**이라고 표시됩니다.
+(날짜 -> TODAY 타일 -> D-Day 타일 순으로 표시)
+
+(ii) 선택한 날짜가 공휴일인 경우, 날짜 밑에 **공휴일 정보**가 표시됩니다.
+
+(iii) 선택한 날짜가 사용자의 생일인 경우, 날짜 밑에 생일을 축하하는 **별도의 블록**이 표시됩니다.
+
+### (2) 출타 설정 영역
+출타를 설정하는 버튼들을 통해 출타를 설정할 수 있습니다.
+이때, 다음 사항들을 참고하면 더욱 원활하게 출타를 설정할 수 있습니다.
+
+(i) **성과제 외박**의 경우, 정당한 사유에 따른 지연이 가능하기 때문에
+**성과제 외박 주기 내에서 사용 한도 이상의 성과제 외박 사용이 가능**합니다.
+이 경우 **알림창을 통해 지연된 성과제 외박을 사용함을 알려줍니다.**
+
+(ii) **연가**의 경우, 정당한 사유에 따른 상위 계급으로의 이월이 가능하기 때문에 **현 계급과 다른 계급에 배정된 연가 사용이 가능합니다.**
+이 경우 알림창을 통해 이월된 연가를 사용함을 알려줍니다.
+단, **한도 이상의 연가를 사용할 수 없으며** 이를 알림창으로 알려줍니다.
+
+(iii) **포상휴가**의 경우, **현 계급의 한도 이상의 포상휴가를 사용할 수 없으며** 이를 알림창으로 알려줍니다.
+
+(iv) **위로휴가**의 경우, **복무 기간 전체의 한도 이상의 위로휴가를 사용할 수 없으며** 이를 알림창으로 알려줍니다.
+
+(v) **평일외출**의 경우, **주말이나 공휴일에 사용할 수 없으며** 이를 알림창으로 알려줍니다.
+평일외출은 마일리지 및 가점을 통해 한도 이상으로 사용할 수 있기 때문에 **한도 이상의 평일외출 사용이 가능**합니다.
+
+(vi) **특별외출**의 경우, **공휴일이 아닌 평일에 사용할 수 없으며** 이를 알림창으로 알려줍니다.
+
+(vii) **초과근무가 설정된 날**에는 **출타를 사용할 수 없으며** 이를 알림창으로 알려줍니다.
+단, 평일외출 한정으로 저녁 초과근무가 없는 평일에 사용할 수 있습니다.
+
+출타가 설정된 날의 경우, 각 날짜에 어떤 출타가 지정되었는지 **날짜 칸의 하단에 띠 모양**으로 알려줍니다.
+**평일외출**의 경우, **우측 1/3 부분만** 띠가 표시됩니다.
+
+또한, **각 날짜에 해당하는 코멘트를 설정**할 수도 있습니다.
+코멘트가 설정된 날짜는 달력에서 **그 날짜 칸의 우측 상단에 빨간 점**이 생기며, 이 날짜 칸에 **마우스를 올리면 말풍선을 통해 배정된 코멘트를 디스플레이에 띄웁니다.**
+
+### (3) 초과근무 영역
+초과근무 사용 버튼을 통해 **초과근무를 설정**할 수 있습니다.
+**이미 출타가 설정된 날**에는 **초과근무를 설정할 수 없으며** 이를 알림창으로 알려줍니다.
+
+초과근무가 설정된 날의 경우, 각 날짜에 어떤 초과근무가 사용되었는지 **날짜 칸의 하단에 띠 모양**으로 알려줍니다.
+오전/오후/저녁 초과근무는 **각 띠의 좌측 1/3 부분/가운데 1/3 부분/우측 1/3 부분에만 띠가 표시**됩니다.
+
+---
+
+## 5. 이스터에그
+
+**숨겨진 이스터에그**가 있습니다.
+찾아보는 것도 앱을 사용하는 재미 중 하나이지 않을까 싶습니다.
+
+---
+
+## 6. 문의사항
+
+앱에 대한 문의사항이 있는 경우
+아래 연락처로 문의주시기 바랍니다.
+
+**인터넷 메일**: shinhup4743@gmail.com
+**인트라넷 메일**: 25-70014641@af.mil
+**인스타그램**: [@shinhu_.vkr](https://instagram.com/shinhu_.vkr)
+**GitHub**: [https://github.com/tlsgnvkr](https://github.com/tlsgnvkr)
