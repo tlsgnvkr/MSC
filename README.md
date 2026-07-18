@@ -233,5 +233,5 @@ build.zip의 압축을 해제한 후, 폴더 내에 있는 MSC.html 파일을 �
 
 **인터넷 메일**: shinhup4743@gmail.com<br>
 **인트라넷 메일**: 25-70014641@af.mil<br>
-**인스타그램**: <a href="https://www.instagram.com/shinhu_.vkr" target="_blank">@shinhu_.vkr</a>
+**인스타그램**: <a href="https://www.instagram.com/shinhu_.vkr" target="_blank">@shinhu_.vkr</a><br>
 **GitHub**: <a href="https://www.github.com/tlsgnvkr" target="_blank">tlsgnvkr</a>
