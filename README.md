@@ -243,7 +243,7 @@ militaryservicecalendar
 앱에 대한 문의사항이 있는 경우
 아래 연락처로 문의주시기 바랍니다.
 
-**인터넷 메일**: shinhup4743@gmail.com
-**인트라넷 메일**: 25-70014641@af.mil
-**인스타그램**: [@shinhu_.vkr](https://instagram.com/shinhu_.vkr)
+**인터넷 메일**: shinhup4743@gmail.com<br>
+**인트라넷 메일**: 25-70014641@af.mil<br>
+**인스타그램**: [@shinhu_.vkr](https://instagram.com/shinhu_.vkr)<br>
 **GitHub**: [https://github.com/tlsgnvkr](https://github.com/tlsgnvkr)
